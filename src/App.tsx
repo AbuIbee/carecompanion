@@ -11,6 +11,11 @@ import './App.css';
 
 function AppContent() {
   const { state, dispatch } = useApp();
+  
+console.log("ENV CHECK", {
+  url: import.meta.env.VITE_SUPABASE_URL,
+  hasAnon: Boolean(import.meta.env.VITE_SUPABASE_ANON_KEY),
+});
 
   useEffect(() => {
     if (state.isAuthenticated && !state.patient) {
