@@ -1,5 +1,7 @@
 import { useApp } from '@/store/AppContext';
 import { useAllPatients } from '@/hooks/useSelectedPatient';
+import { useEffect, useState } from "react";
+import { listMyPatients, createPatient } from "@/lib/db";
 import {
   Users,
   AlertTriangle,
@@ -19,7 +21,25 @@ interface MultiPatientDashboardProps {
 
 export default function MultiPatientDashboard({ onSelectPatient }: MultiPatientDashboardProps) {
   const { state } = useApp();
-  const allPatients = useAllPatients();
+  import { useEffect, useState } from "react";
+import { listMyPatients, createPatient } from "@/lib/db";
+
+const [patients, setPatients] = useState<any[]>([]);
+const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  (async () => {
+    try {
+      const rows = await listMyPatients();
+      setPatients(rows);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  })();
+}, []);
+
 
   // Calculate aggregated stats
   const totalPatients = allPatients.length;
@@ -169,7 +189,7 @@ export default function MultiPatientDashboard({ onSelectPatient }: MultiPatientD
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {allPatients.map((patientData, index) => {
+          {Patients.map((patientData, index) => {
             const unreadAlerts = patientData.alerts.filter(a => !a.isRead).length;
             const pendingMeds = patientData.medicationLogs.filter(m => m.status === 'pending').length;
             const todayMood = patientData.moodEntries[0];
