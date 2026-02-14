@@ -25,7 +25,7 @@ export default function MultiPatientDashboard({ onSelectPatient }: MultiPatientD
 import { listMyPatients, createPatient } from "@/lib/db";
 
 const [patients, setPatients] = useState<any[]>([]);
-const [loading, setLoading] = useState(true);
+const [loadingPatients, setLoadingPatients] = useState(true);
 
 useEffect(() => {
   (async () => {
@@ -33,13 +33,21 @@ useEffect(() => {
       const rows = await listMyPatients();
       setPatients(rows);
     } catch (e) {
-      console.error(e);
+      console.error("Failed to load patients", e);
     } finally {
-      setLoading(false);
+      setLoadingPatients(false);
     }
   })();
 }, []);
 
+const onAddPatient = async () => {
+  try {
+    const p = await createPatient({ display_name: "New Patient" });
+    setPatients(prev => [p, ...prev]);
+  } catch (e) {
+    console.error("Failed to create patient", e);
+  }
+};
 
   // Calculate aggregated stats
   const totalPatients = allPatients.length;
